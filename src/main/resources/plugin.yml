@@ -1,0 +1,9 @@
+name: NerunyaCore
+version: ${project.version}
+main: nagatuki.nerunyacore.NerunyaCore
+api-version: 1.13
+
+commands:
+  nc:
+  motd:
+  ncorereload:

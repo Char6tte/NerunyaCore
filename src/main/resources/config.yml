@@ -1,0 +1,4 @@
+JoinMessage: "&a%player_name% &eさんがログインしました！！！"
+tutMessages:
+  prefix: "&btutorial&3:"
+  motd: "&3hey welcome to the server!!!"
