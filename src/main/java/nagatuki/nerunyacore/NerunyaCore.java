@@ -1,5 +1,8 @@
 package nagatuki.nerunyacore;
 
+import nagatuki.nerunyacore.command.CommandFramework;
+import nagatuki.nerunyacore.command.CommandHandler;
+import nagatuki.nerunyacore.commands;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +37,14 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
     private File customConfigFile;
     private FileConfiguration customConfig;
 
+
+    private String label;
+
+
+    public NerunyaCore(String label) {
+        this.label = label;
+    }
+
     @Override
     public void onEnable() {
 
@@ -61,6 +72,8 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         loadColoarsMessages();
         //Vault利用変数
         vault = new VaultManager(this);
+
+        CommandFramework.register(this, new CommandHandler("nc"));
     }
 
     @Override
