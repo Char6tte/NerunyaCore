@@ -5,7 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class NerunyaCore extends JavaPlugin implements Listener {
 
@@ -27,6 +30,9 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
     }
 
     public VaultManager vault = null;
+
+    private File customConfigFile;
+    private FileConfiguration customConfig;
 
     @Override
     public void onEnable() {
@@ -50,6 +56,7 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
             this.saveDefaultConfig();
         }
         FileConfiguration config = getConfig();
+        createCustomConfig();
         //configないメッセージ　カラーコード変換
         loadColoarsMessages();
         //Vault利用変数
@@ -60,6 +67,26 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
         saveConfig();
+    }
+
+
+    public FileConfiguration getCustomConfig() {
+        return this.customConfig;
+    }
+
+    private void createCustomConfig() {
+        customConfigFile = new File(getDataFolder(), "log.yml");
+        if (!customConfigFile.exists()) {
+            customConfigFile.getParentFile().mkdirs();
+            saveResource("log.yml", false);
+        }
+
+        customConfig = new YamlConfiguration();
+        try {
+            customConfig.load(customConfigFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     //ログインメッセージ
@@ -100,4 +127,8 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
 
         this.joinmsg = ChatColor.translateAlternateColorCodes('&', getConfig().getString("JoinMessage"));
     }
+
+
+
+
 }
