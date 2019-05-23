@@ -98,14 +98,5 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
-
-
-        <dependency>
-            <groupId>eu.theindra.geoip</groupId>
-            <artifactId>geoip</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/GeoipAPI.jar</systemPath>
-        </dependency>
     </dependencies>
 </project>

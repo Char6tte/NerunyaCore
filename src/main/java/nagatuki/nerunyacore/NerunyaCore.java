@@ -1,6 +1,5 @@
 package nagatuki.nerunyacore;
 
-import eu.theindra.geoip.api.GeoIP;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.net.InetAddress;
+import java.io.File;
 
 public final class NerunyaCore extends JavaPlugin implements Listener {
 
@@ -31,19 +30,30 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
+        /*
+        PlaceholderAPI存在確認
+        */
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Bukkit.getPluginManager().registerEvents(this, this);
         } else {
             throw new RuntimeException("Could not find PlaceholderAPI!! Plugin can not work without it!");
         }
-        // Plugin startup logic
-        instance = this;
-        getServer().getPluginManager().registerEvents(this, this);
-        saveDefaultConfig();
-        FileConfiguration config = getConfig();
-        loadTutorialMessages();
-        vault = new VaultManager(this);
 
+
+        instance = this;
+        //イベント取得
+        getServer().getPluginManager().registerEvents(this, this);
+        //config関係
+        File fileConf = new File(this.getDataFolder(), "config.yml");
+        if (!fileConf.exists()) {
+            this.saveDefaultConfig();
+        }
+        FileConfiguration config = getConfig();
+        //configないメッセージ　カラーコード変換
+        loadColoarsMessages();
+        //Vault利用変数
+        vault = new VaultManager(this);
     }
 
     @Override
@@ -52,6 +62,7 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         saveConfig();
     }
 
+    //ログインメッセージ
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
@@ -61,34 +72,10 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         joinText = PlaceholderAPI.setPlaceholders(p, joinText);
 
         event.setJoinMessage(joinText);
-
-
-
-        ////////////////////////////////
-        //      GeoIPチェック
-        ////////////////////////////////
-
-        double balance = vault.getBalance(p.getUniqueId());
-
-        //          全ユーザに通知
-        /*
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            int loginCount = getLoginCount(p.getUniqueId());
-            player.sendMessage(ChatColor.YELLOW + p.getDisplayName() + "さんがログインしました");
-
-            if (loginCount != -1) {
-                if (loginCount == 0) {
-                    player.sendMessage(ChatColor.GREEN + "はじめてのログインです！");
-                }
-                {
-                    player.sendMessage(ChatColor.YELLOW + "" + loginCount + "回目のログインです");
-                }
-            }
-        }
-        */
     }
 
 
+    //config練習用
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("motd")) {
             if(sender instanceof Player){
@@ -102,9 +89,9 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         return true;
     }
 
-    // now for the "setup-config" method
 
-    public void loadTutorialMessages() {
+    //カラーコード変換
+    public void loadColoarsMessages() {
 // we'll load the prefix first so we can add it to every other message if it wasn't the first to be load you will get a NullPointerException.
 
         this.tutprefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("tutMessages.prefix"));
