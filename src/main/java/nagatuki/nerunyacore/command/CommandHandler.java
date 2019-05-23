@@ -15,6 +15,7 @@ public class CommandHandler extends CommandFramework {
     public CommandHandler(String label) {
         super(label);
     }
+
     private NerunyaCore core;
 
 
@@ -35,23 +36,24 @@ public class CommandHandler extends CommandFramework {
                 core.getCustomConfig().set("Players." + sender.getName() + ".MCID.reason", args[1]);
             }
             if (!(sender instanceof Player)) {//コンソールから実行した場合とりあえずコマンドを弾いてみる
-            Player senders = (Player) sender;//CommandSender->Playerのキャストは基本的なことなのでしっかり覚えておくと良いです
+                Player senders = (Player) sender;//CommandSender->Playerのキャストは基本的なことなのでしっかり覚えておくと良いです
 
-            Set<OfflinePlayer> ops = this.getServer().getOperators();//とりあえずオペレータたちを取得
-            Iterator<OfflinePlayer> ite = ops.iterator();//繰り返し処理用のイテレータを取得
+                Set<OfflinePlayer> ops = this.core.getServer().getOperators();//とりあえずオペレータたちを取得
+                Iterator<OfflinePlayer> ite = ops.iterator();//繰り返し処理用のイテレータを取得
 
-            while (ite.hasNext()) {//イテレータを使って繰り返し処理するときのお約束の書き方
-                OfflinePlayer offlinePlayer = ite.next();
-                if (offlinePlayer.isOnline()) {//オンラインであれば
-                    Player op = (Player) offlinePlayer;//Player型にキャストできる
-                    op.sendMessage(args[0] + "が" + args[1] + "している可能性があります。");
-                    //senderを参照すればコマンドを実行したプレイヤーの情報がわかりますのでそれを用いてメッセージを組み立ててください。
-                    //記事下部に参考までにPlayerインターフェイスのjavadocのリンクを張りますのでそれを参照し、必要な情報を取得してください。
-                    //あえて詳しくは書きません。
+                while (ite.hasNext()) {//イテレータを使って繰り返し処理するときのお約束の書き方
+                    OfflinePlayer offlinePlayer = ite.next();
+                    if (offlinePlayer.isOnline()) {//オンラインであれば
+                        Player op = (Player) offlinePlayer;//Player型にキャストできる
+                        op.sendMessage(args[0] + "が" + args[1] + "している可能性があります。");
+                        //senderを参照すればコマンドを実行したプレイヤーの情報がわかりますのでそれを用いてメッセージを組み立ててください。
+                        //記事下部に参考までにPlayerインターフェイスのjavadocのリンクを張りますのでそれを参照し、必要な情報を取得してください。
+                        //あえて詳しくは書きません。
+                    }
                 }
-            }
 
-            senders.sendMessage("ご報告ありがとうございました。");//報告してくれた人に送信
+                senders.sendMessage("ご報告ありがとうございました。");//報告してくれた人に送信
+            }
         }
     }
 }
