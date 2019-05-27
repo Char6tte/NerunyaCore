@@ -4,6 +4,10 @@ main: nagatuki.nerunyacore.NerunyaCore
 api-version: 1.13
 
 commands:
-  nc:
+  nerunyacore:
+    description: Main command for nerunyacore.
+    usage: /<command> (Startup error)
+    aliases: [nc]
   motd:
-  report:
+    description: motd.
+    usage: /<command> (Startup error)

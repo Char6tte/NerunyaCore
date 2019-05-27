@@ -1,8 +1,5 @@
 package nagatuki.nerunyacore;
 
-import nagatuki.nerunyacore.command.CommandFramework;
-import nagatuki.nerunyacore.command.CommandHandler;
-import nagatuki.nerunyacore.commands;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,33 +18,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public final class NerunyaCore extends JavaPlugin implements Listener {
+public final class NerunyaCore extends JavaPlugin implements Listener{
 
 
     String tutprefix;
     String tutmotd;
     String joinmsg;
-    private static NerunyaCore instance;
-    public static NerunyaCore getInstance(){
-        return instance;
-    }
 
     public VaultManager vault = null;
 
     private File customConfigFile;
     private FileConfiguration customConfig;
 
-
-    private String label;
-
-
-    public NerunyaCore(String label) {
-        this.label = label;
-    }
-
     @Override
     public void onEnable() {
-
         /*
         PlaceholderAPI存在確認
         */
@@ -56,9 +40,6 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         } else {
             throw new RuntimeException("Could not find PlaceholderAPI!! Plugin can not work without it!");
         }
-
-
-        instance = this;
         //イベント取得
         getServer().getPluginManager().registerEvents(this, this);
         //config関係
@@ -73,7 +54,9 @@ public final class NerunyaCore extends JavaPlugin implements Listener {
         //Vault利用変数
         vault = new VaultManager(this);
 
-        CommandFramework.register(this, new CommandHandler("nc"));
+        getCommand("nerunyacore").setExecutor(new commands(this));
+        getCommand("nc").setExecutor(new commands(this));
+
     }
 
     @Override
