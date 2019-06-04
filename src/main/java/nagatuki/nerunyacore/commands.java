@@ -1,14 +1,12 @@
 package nagatuki.nerunyacore;
 
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.util.Iterator;
-import java.util.Set;
 
 public class commands implements Listener, CommandExecutor {
 
@@ -50,34 +48,27 @@ public class commands implements Listener, CommandExecutor {
                     return true;
                 }//コンソールから実行した場合とりあえずコマンドを弾いてみる
 
-                Set<OfflinePlayer> ops = core.getServer().getOperators();//とりあえずオペレータたちを取得
-                Iterator<OfflinePlayer> ite = ops.iterator();//繰り返し処理用のイテレータを取得
+                //Set<OfflinePlayer> ops = core.getServer().getOperators();//とりあえずオペレータたちを取得
+                //Iterator<OfflinePlayer> ite = ops.iterator();//繰り返し処理用のイテレータを取得
 
-                while (ite.hasNext()) {//イテレータを使って繰り返し処理するときのお約束の書き方
-                    OfflinePlayer offlinePlayer = ite.next();
-                    if (offlinePlayer.isOnline()) {//オンラインであれば
-                        //Player op = (Player) offlinePlayer;//Player型にキャストできる
-                        if(op == null){
-                            core.getCustomConfig().set("Players." + sender.getName(), sender);
-                            core.getCustomConfig().set("Players." + sender.getName() + ".MCID", args[1]);
-                            core.getCustomConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
-                        }else {
-                            op.sendMessage(args[0] + "が" + args[1] + "している可能性があります。");
-                        }
-                    }else {
-                        sender.sendMessage("Not!!!");
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.isOp()) {
+                        Player player = p.getPlayer();
+                        player.sendMessage(args[0] + "が" + args[1] + "している可能性があります。");
                     }
                 }
-
-
-
+                core.getCustomConfig().set("Players." + sender.getName(), sender);
+                core.getCustomConfig().set("Players." + sender.getName() + ".MCID", args[1]);
+                core.getCustomConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
 
                 sender.sendMessage("ご報告ありがとうございました。");//報告してくれた人に送信
                 return true;
+            }else {
+                        sender.sendMessage("Not!!!");
             }
+            sender.sendMessage("UnkownCommand!!!");
             return true;
         }
-        sender.sendMessage("UnkownCommand!!!");
         return true;
     }
 }
