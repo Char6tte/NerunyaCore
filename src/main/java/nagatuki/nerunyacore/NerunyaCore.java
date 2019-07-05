@@ -13,10 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public final class NerunyaCore extends JavaPlugin implements Listener{
 
@@ -26,6 +28,8 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
     String joinmsg;
 
     public VaultManager vault = null;
+    public CustomConfig config = null;
+    public CustomConfig log = null;
 
     private File customConfigFile;
     private FileConfiguration customConfig;
@@ -43,11 +47,8 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
         //イベント取得
         getServer().getPluginManager().registerEvents(this, this);
         //config関係
-        File fileConf = new File(this.getDataFolder(), "config.yml");
-        if (!fileConf.exists()) {
-            this.saveDefaultConfig();
-        }
-        FileConfiguration config = getConfig();
+        config = new CustomConfig(this);
+        log = new CustomConfig(this, "log.yml");
         createCustomConfig();
         //configないメッセージ　カラーコード変換
         loadColoarsMessages();
@@ -123,8 +124,4 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
 
         this.joinmsg = ChatColor.translateAlternateColorCodes('&', getConfig().getString("JoinMessage"));
     }
-
-
-
-
 }

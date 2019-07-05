@@ -19,12 +19,15 @@ public class commands implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("nerunyacore") || commandLabel.equalsIgnoreCase("nc")) {
-            Player senders = (Player) sender;
 
             if (args.length == 0) {
-                sender.sendMessage("Command Help");
+                if (sender instanceof Player) {
+                    sender.sendMessage("Command Help");
+                } else {
+                    sender.sendMessage("aaaaa");
+                }
             } else if (args[0].equalsIgnoreCase("reload")) {
-                core.reloadConfig();
+                core.log.reloadConfig();
                 sender.sendMessage("Comprete!!!");
                 return true;
             } else if (args[0].equalsIgnoreCase("report")) {
@@ -38,35 +41,31 @@ public class commands implements Listener, CommandExecutor {
                     //実際のプラグインではその違反者が実際に存在するかを確認したほうがいいかもしれない
                     //ついでにログの保存やら何かしたほうがいいかもしれない
                     sender.sendMessage("引数が多すぎます！！！");
-                    core.getCustomConfig().set("Players." + sender.getName(), sender);
-                    core.getCustomConfig().set("Players." + sender.getName() + ".MCID", args[1]);
-                    core.getCustomConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
+
+                    core.log.getConfig().set("Players." + sender.getName(), sender);
+                    core.log.getConfig().set("Players." + sender.getName() + ".MCID", args[1]);
+                    core.log.getConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
+                    core.log.saveConfig();
                     return true;
                 }
-                //ここからエラー
                 if (!(sender instanceof Player)) {
                     return true;
                 }//コンソールから実行した場合とりあえずコマンドを弾いてみる
 
-                //Set<OfflinePlayer> ops = core.getServer().getOperators();//とりあえずオペレータたちを取得
-                //Iterator<OfflinePlayer> ite = ops.iterator();//繰り返し処理用のイテレータを取得
-
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.isOp()) {
                         Player player = p.getPlayer();
-                        player.sendMessage(args[0] + "が" + args[1] + "している可能性があります。");
+                        player.sendMessage(args[1] + "が" + args[2] + "している可能性があります。");
                     }
                 }
-                core.getCustomConfig().set("Players." + sender.getName(), sender);
-                core.getCustomConfig().set("Players." + sender.getName() + ".MCID", args[1]);
-                core.getCustomConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
+                core.log.getConfig().set("Players." + sender.getName(), sender);
+                core.log.getConfig().set("Players." + sender.getName() + ".MCID", args[1]);
+                core.log.getConfig().set("Players." + sender.getName() + ".MCID.reason", args[2]);
+                core.log.saveConfig();
 
                 sender.sendMessage("ご報告ありがとうございました。");//報告してくれた人に送信
                 return true;
-            }else {
-                        sender.sendMessage("Not!!!");
             }
-            sender.sendMessage("UnkownCommand!!!");
             return true;
         }
         return true;
