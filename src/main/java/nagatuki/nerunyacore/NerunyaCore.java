@@ -8,17 +8,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.List;
 
 public final class NerunyaCore extends JavaPlugin implements Listener{
 
@@ -33,6 +36,8 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
 
     private File customConfigFile;
     private FileConfiguration customConfig;
+
+    HashMap<String, Integer> kill = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -57,7 +62,6 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
 
         getCommand("nerunyacore").setExecutor(new commands(this));
         getCommand("nc").setExecutor(new commands(this));
-
     }
 
     @Override
@@ -124,4 +128,46 @@ public final class NerunyaCore extends JavaPlugin implements Listener{
 
         this.joinmsg = ChatColor.translateAlternateColorCodes('&', getConfig().getString("JoinMessage"));
     }
+
+
+    /**
+     * エンティティが死亡するときに呼ばれる
+     *
+     * @param e
+     */
+    @EventHandler
+    public void onEntityDeathEvent(EntityDeathEvent e) {
+
+        //Monster monsterEnt = (Monster) e.getEntity();
+        //Player mcPlayer = (Player)monsterEnt.getKiller();
+        //Player target = monsterEnt.getKiller();
+        LivingEntity entity = e.getEntity();
+        Player player = entity.getKiller();
+        List<String> s = this.getConfig().getStringList("map");
+
+        // null=プレイヤーが殺したのではないなら
+        if (player == null) {
+            return; // 何もしない
+        }else if (e.getEntityType() == EntityType.ZOMBIE) {
+            //キル数加算
+            kill.put( "zombie", + 1);
+        }else if (e.getEntityType() == EntityType.SKELETON) {
+            //キル数加算
+            kill.put("skeleton", +1);
+        }else if (e.getEntityType() == EntityType.CREEPER) {
+            //キル数加算
+            kill.put("creeper", +1);
+        }
+        // データを保存
+        saveHashMap(kill);
+    }
+
+    public void saveHashMap(HashMap<String,Integer> kill){
+        for (Object key : kill.keySet()) {
+            config.getConfig().set("HashMap."+key, kill.get(key));
+        }
+//important: save the config!
+        saveConfig();
+    }
+
 }

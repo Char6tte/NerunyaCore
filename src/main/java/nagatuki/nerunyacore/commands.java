@@ -30,6 +30,16 @@ public class commands implements Listener, CommandExecutor {
                 core.log.reloadConfig();
                 sender.sendMessage("Comprete!!!");
                 return true;
+            }else if(args[0].equalsIgnoreCase("killcount")) {
+                int zombie= core.kill.get("zombie");
+                int skeleton = core.kill.get("skeleton");
+                int creeper = core.kill.get("creeper");
+                sender.sendMessage("-------------------------------------------------");
+                sender.sendMessage("ゾンビ討伐数(合計)"+ zombie);
+                sender.sendMessage("スケルトン討伐数(合計)"+ skeleton);
+                sender.sendMessage("クリーパー討伐数(合計)"+ creeper);
+                sender.sendMessage("-------------------------------------------------");
+                return true;
             } else if (args[0].equalsIgnoreCase("report")) {
                 /* コマンド詳細
                  * ./report <違反者のID> <報告内容>
